@@ -1,0 +1,1 @@
+My personal devcontainer for Immich development

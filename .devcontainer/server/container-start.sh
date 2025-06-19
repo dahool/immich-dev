@@ -13,12 +13,12 @@ fix_permissions
 log "Installing npm dependencies (node_modules)..."
 install_dependencies
 
-log "Setup complete, please wait while backend and frontend services automatically start"
+log "Setup complete"
 log
-log "If necessary, the services may be manually started using"
+log "Only the infra services are started (ML, redis, postgres). Server and Web should be started manually, using the following aliases"
 log
-log "$ container-start-backend.sh"
-log "$ container-start-frontend.sh"
+log "$ runserver"
+log "$ runweb"
 log
 log "From different terminal windows, as these scripts automatically restart the server"
 log "on error, and will continuously run in a loop"

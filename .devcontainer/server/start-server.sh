@@ -1,7 +1,8 @@
 #!/bin/bash
 # shellcheck source=common.sh
 # shellcheck disable=SC1091
-source /immich-devcontainer/container-common.sh
+SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
+source "$SCRIPT_DIR/container-common.sh"
 
 log "Starting Nest API Server"
 log ""

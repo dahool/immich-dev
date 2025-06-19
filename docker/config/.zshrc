@@ -111,3 +111,6 @@ source $ZSH/oh-my-zsh.sh
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 POWERLEVEL9K_MODE="nerdfont-complete"
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+alias runserver='/workspaces/immich/.devcontainer/server/start-server.sh'
+alias runweb='/workspaces/immich/.devcontainer/server/start-web.sh'

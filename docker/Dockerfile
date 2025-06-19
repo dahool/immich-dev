@@ -1,3 +1,6 @@
+# We need it to get a required file
+FROM ghcr.io/immich-app/base-server-dev:202505131114@sha256:cf4507bbbf307e9b6d8ee9418993321f2b85867da8ce14d0a20ccaf9574cb995 AS immich_base
+
 FROM ubuntu:22.04
 
 RUN apt-get update && \
@@ -6,10 +9,12 @@ RUN apt-get update && \
     curl \
     make \
     sudo \
+    make \
     ca-certificates \
     gnupg \
     apt-transport-https \
     lsb-release \
+    nano \
     zsh
 
 # Install Node.js (LTS version) using NodeSource repositories
@@ -45,6 +50,9 @@ RUN groupadd --gid $USER_GID $USERNAME && \
     echo '%sudo ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/90-sudo-nopasswd && \
     chmod 0440 /etc/sudoers.d/90-sudo-nopasswd && \
     rm -rf /var/lib/apt/lists/*
+
+# Copy required files from Immich image
+COPY --from=immich_base /build/geodata /build/geodata
 
 # Set the default user
 USER $USERNAME

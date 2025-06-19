@@ -58,8 +58,7 @@
   "containerEnv": {
     "SSH_AUTH_SOCK": "/tmp/ssh-agent",
     "UPLOAD_LOCATION": "/library",
-    "DB_PASSWORD": "postgres",
-    "DB_USERNAME": "postgres",
-    "DB_DATABASE_NAME": "immich"
-  }
+    "IMMICH_SERVER_URL": "http://127.0.0.1:2283/"
+  },
+   "shutdownAction": "stopCompose"
 }
