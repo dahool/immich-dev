@@ -1,0 +1,39 @@
+#
+# WARNING: To install Immich, follow our guide: https://immich.app/docs/install/docker-compose
+#
+# Make sure to use the docker-compose.yml of the current release:
+#
+# https://github.com/immich-app/immich/releases/latest/download/docker-compose.yml
+#
+# The compose file on main may not be compatible with the latest release.
+
+# For development see:
+# - https://immich.app/docs/developer/setup
+# - https://immich.app/docs/developer/troubleshooting
+
+name: immich-dev-environment
+
+services:
+  immich-dev-workspace:
+    container_name: immich-dev-workspace
+    image: immich-dev-workspace:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: no
+    volumes:
+      - node_modules_server:/workspaces/immich/server/node_modules
+      - node_modules_web:/workspaces/immich/web/node_modules
+      - node_modules_e2e:/workspaces/immich/e2e/node_modules
+      - node_modules_cli:/workspaces/immich/cli/node_modules
+      - node_modules_openapi:/workspaces/immich/open-api/typescript-sdk/node_modules
+      - /etc/localtime:/etc/localtime:ro
+    healthcheck:
+      disable: false
+      
+volumes:
+  node_modules_server:
+  node_modules_web:
+  node_modules_e2e:
+  node_modules_cli:
+  node_modules_openapi:
