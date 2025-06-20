@@ -21,18 +21,36 @@ services:
       context: .
       dockerfile: Dockerfile
     restart: no
+    environment:
+      IMMICH_SERVER_URL: http://127.0.0.1:2283/
+      IMMICH_REPOSITORY: immich-app/immich
+      IMMICH_REPOSITORY_URL: https://github.com/immich-app/immich
+      IMMICH_SOURCE_REF: local
+      IMMICH_SOURCE_COMMIT: af2efbdbbddc27cd06142f22253ccbbbbeec1f55
+      IMMICH_SOURCE_URL: https://github.com/immich-app/immich/commit/af2efbdbbddc27cd06142f22253ccbbbbeec1f55
+      IMMICH_BUILD: '9654404849'
+      IMMICH_BUILD_URL: https://github.com/immich-app/immich/actions/runs/9654404849
+      IMMICH_BUILD_IMAGE: development
+      IMMICH_BUILD_IMAGE_URL: https://github.com/immich-app/immich/pkgs/container/immich-server
+      IMMICH_THIRD_PARTY_SOURCE_URL: https://github.com/immich-app/immich/
+      IMMICH_THIRD_PARTY_BUG_FEATURE_URL: https://github.com/immich-app/immich/issues
+      IMMICH_THIRD_PARTY_DOCUMENTATION_URL: https://immich.app/docs
+      IMMICH_THIRD_PARTY_SUPPORT_URL: https://immich.app/docs/community-guides    
     volumes:
       - node_modules_server:/workspaces/immich/server/node_modules
       - node_modules_web:/workspaces/immich/web/node_modules
       - node_modules_e2e:/workspaces/immich/e2e/node_modules
       - node_modules_cli:/workspaces/immich/cli/node_modules
       - node_modules_openapi:/workspaces/immich/open-api/typescript-sdk/node_modules
-      - /etc/localtime:/etc/localtime:ro
+    ulimits:
+      nofile:
+        soft: 1048576
+        hard: 1048576      
     healthcheck:
       disable: false
 
   redis:
-    container_name: immich_redis
+    container_name: immich_redis-dev
     image: valkey/valkey:8-alpine
     healthcheck:
       test: redis-cli ping || exit 1
@@ -40,7 +58,7 @@ services:
       - 6379:6379
 
   database:
-    container_name: immich_postgres
+    container_name: immich_postgres-dev
     image: ghcr.io/immich-app/postgres:14-vectorchord0.4.2
     environment:
       POSTGRES_PASSWORD: 'postgres'
@@ -52,7 +70,7 @@ services:
     ports:
       - 5432:5432
 
-  immich-ml:
+  immich-machine-learning:
     container_name: immich_machine_learning-dev
     image: ghcr.io/immich-app/immich-machine-learning:release
     volumes:

@@ -4,9 +4,6 @@
   "dockerComposeFile": [
     "../docker/compose-dev.yml"
   ],
-  "runArgs": [
-    "--volume", "${localEnv:SSH_AUTH_SOCK}:/tmp/ssh-agent:ro"
-  ],  
   "customizations": {
     "vscode": {
       "extensions": [
@@ -18,10 +15,11 @@
         "timonwong.shellcheck",
         "rvest.vs-code-prettier-eslint",
         "bluebrown.yamlfmt",
-        "vkrishna04.cspell-sync",
-        //"vitest.explorer",
+        "vitest.explorer",
         "ms-playwright.playwright",
-        "ms-azuretools.vscode-docker"
+        "ms-azuretools.vscode-docker",
+        "rajivshah01234.make-runner",
+        "christian-kohler.path-intellisense"
       ]
     }
   },
@@ -46,19 +44,19 @@
     }
   },
   "overrideCommand": true,
-  "workspaceFolder": "/workspaces/immich",
+  "workspaceFolder": "/workspaces",
   "mounts": [
-    "source=${localEnv:IMMICH_WORKSPACE},target=/workspaces/immich,type=bind",
-    "source=${localWorkspaceFolder}/.devcontainer,target=/workspaces/immich/.devcontainer,type=bind",
+    "source=${localWorkspaceFolder},target=/workspaces,type=bind",
+    "source=${localEnv:WORKSPACE_IMMICH},target=/workspaces/immich,type=bind",
 		"source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind"
-  ],  
-  "postCreateCommand": "${containerWorkspaceFolder}/.devcontainer/server/container-start.sh",
+  ],
+  "postCreateCommand": "/workspaces/.devcontainer/server/container-start.sh",
   "remoteUser": "vscode",
+  "containerUser": "vscode",
   "userEnvProbe": "loginInteractiveShell",
   "containerEnv": {
-    "SSH_AUTH_SOCK": "/tmp/ssh-agent",
-    "UPLOAD_LOCATION": "/library",
-    "IMMICH_SERVER_URL": "http://127.0.0.1:2283/"
+    "UPLOAD_LOCATION": "/workspaces/library",
+    "IMMICH_WORKSPACE": "/workspaces/immich"
   },
    "shutdownAction": "stopCompose"
 }

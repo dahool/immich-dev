@@ -1,7 +1,11 @@
 # We need it to get a required file
 FROM ghcr.io/immich-app/base-server-dev:202505131114@sha256:cf4507bbbf307e9b6d8ee9418993321f2b85867da8ce14d0a20ccaf9574cb995 AS immich_base
 
-FROM ubuntu:22.04
+FROM ubuntu:noble
+
+RUN if id "ubuntu" &>/dev/null; then \
+        echo "Deleting user 'ubuntu'" && userdel -f -r ubuntu || echo "Failed to delete ubuntu user"; \
+    fi;
 
 RUN apt-get update && \
     apt-get install -y \
@@ -15,7 +19,8 @@ RUN apt-get update && \
     apt-transport-https \
     lsb-release \
     nano \
-    zsh
+    zsh \
+    inetutils-ping
 
 # Install Node.js (LTS version) using NodeSource repositories
 RUN curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - && \
@@ -44,7 +49,7 @@ ENV HOME=/home/$USERNAME
 
 RUN groupadd --gid $USER_GID $USERNAME && \
     useradd -s /usr/bin/zsh --uid $USER_UID --gid $USER_GID -m $USERNAME && \
-    groupadd docker && \
+    groupadd --gid 988 docker && \
     usermod -aG sudo $USERNAME && \
     usermod -aG docker $USERNAME && \    
     echo '%sudo ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/90-sudo-nopasswd && \

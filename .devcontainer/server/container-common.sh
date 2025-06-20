@@ -7,8 +7,11 @@ export DEV_PORT="${DEV_PORT:-3000}"
 # Devcontainer: Clone [repository|pull request] in container volumne
 WORKSPACES_DIR="/workspaces"
 IMMICH_DIR="$WORKSPACES_DIR/immich"
+LIBRARY_DIR="$UPLOAD_LOCATION"
 IMMICH_DEVCONTAINER_LOG="$HOME/immich-devcontainer.log"
 USER_ID=$(id -u)
+
+export IMMICH_WORKSPACE="$IMMICH_DIR"
 
 log() {
     # Display command on console, log with timestamp to file
@@ -31,35 +34,14 @@ run_cmd() {
     return "${PIPESTATUS[0]}"
 }
 
-# Find directories excluding /workspaces/immich
-mapfile -t other_dirs < <(find "$WORKSPACES_DIR" -mindepth 1 -maxdepth 1 -type d ! -path "$IMMICH_DIR" ! -name ".*")
-
-if [ ${#other_dirs[@]} -gt 1 ]; then
-    log "Error: More than one directory found in $WORKSPACES_DIR other than $IMMICH_DIR."
-    exit 1
-elif [ ${#other_dirs[@]} -eq 1 ]; then
-    export IMMICH_WORKSPACE="${other_dirs[0]}"
-else
-    export IMMICH_WORKSPACE="$IMMICH_DIR"
-fi
-
-log "Found immich workspace in $IMMICH_WORKSPACE"
-log ""
-
 fix_permissions() {
 
     log "Fixing permissions for ${IMMICH_WORKSPACE}"
 
-    run_cmd sudo find "${IMMICH_WORKSPACE}/server/upload" -not -path "${IMMICH_WORKSPACE}/server/upload/postgres/*" -not -path "${IMMICH_WORKSPACE}/server/upload/postgres" -exec chown $USER_ID {} +
+    run_cmd sudo chown "$USER_ID" -R "${LIBRARY_DIR}"
+    run_cmd sudo find "${IMMICH_WORKSPACE}" -not -path "*/node_modules/*" -not -path "*/.git/*" -exec chown "$USER_ID" {} +
 
-    run_cmd sudo chown $USER_ID -R "${IMMICH_WORKSPACE}/.vscode" \
-        "${IMMICH_WORKSPACE}/cli/node_modules" \
-        "${IMMICH_WORKSPACE}/e2e/node_modules" \
-        "${IMMICH_WORKSPACE}/open-api/typescript-sdk/node_modules" \
-        "${IMMICH_WORKSPACE}/server/node_modules" \
-        "${IMMICH_WORKSPACE}/server/dist" \
-        "${IMMICH_WORKSPACE}/web/node_modules" \
-        "${IMMICH_WORKSPACE}/web/dist"
+    #run_cmd sudo chown $USER_ID -R "${IMMICH_WORKSPACE}"
 
     log ""
 }
